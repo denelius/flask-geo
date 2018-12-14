@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+<div id="mapid"></div>
+<div id="plot"></div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src='https://npmcdn.com/@turf/turf/turf.min.js'></script>
+<script>
+
+    var map = L.map('mapid').setView([51.505, -0.09], 13);
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map);
+    
+    var user = JSON.parse('{{ user | tojson | safe}}');
+    // new L.GeoJSON(user).addTo(map);
+    
+    poparray = [];
+    var layerGroup = L.geoJSON(user, {
+        onEachFeature: function (feature, layer) {
+            for (key in feature.properties) {
+                if (feature.properties.hasOwnProperty(key)) {
+                    //alert(key + " = " + feature.properties[key]);
+                    
+                    poparray.push("<strong>" + key + ":</strong> " + feature.properties[key] + "</br>");
+                }
+            } 
+            var foo = poparray.toString();
+            var bar = foo.replace(/,/g,"");
+            layer.bindPopup(bar);
+            poparray = [];
+        }
+    }).addTo(map);
+
+    var popup = L.popup();
+
+    map.fitBounds(new L.GeoJSON(user).getBounds());
+
+</script>
+{% endblock %}
