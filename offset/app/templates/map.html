@@ -20,6 +20,10 @@
     poparray = [];
     var layerGroup = L.geoJSON(user, {
         onEachFeature: function (feature, layer) {
+            style {
+                    color: "red",
+                    opacity: 1
+            },
             for (key in feature.properties) {
                 if (feature.properties.hasOwnProperty(key)) {
                     //alert(key + " = " + feature.properties[key]);
